@@ -5,7 +5,7 @@
 %endif
 
 Name:           python-%{pypi_name}
-Version:        1.2.4
+Version:        1.2.5
 Release:        1%{?dist}
 Summary:        Cotyledon provides a framework for defining long-running services.
 
