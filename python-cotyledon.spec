@@ -1,4 +1,5 @@
 %global pypi_name cotyledon
+%global pypi_hash 8b/23/365b5772422322f6bd9c482c1f73989eb389be555e7fa3abd5021b7ddf4b
 
 %if 0%{?fedora}
 %global with_python3 1
@@ -7,34 +8,36 @@
 Name:           python-%{pypi_name}
 Version:        1.2.5
 Release:        1%{?dist}
-Summary:        Cotyledon provides a framework for defining long-running services.
+Summary:        Cotyledon provides a framework for defining long-running services
 
 License:        ASL 2.0
 URL:            https://cotyledon.readthedocs.io
-Source0:        https://pypi.python.org/packages/source/c/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
+Source0:        https://pypi.python.org/packages/%{pypi_hash}/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 BuildRequires:  python-pbr
-Requires:  python-setproctitle
 # For building documentation
 BuildRequires:  python-sphinx
 BuildRequires:  python-setproctitle
+
+Requires:  python-setproctitle
 
 %description
 Cotyledon provides a framework for defining long-running services.
 
 %if 0%{?with_python3}
 %package -n python3-%{pypi_name}
-Summary:        Cotyledon provides a framework for defining long-running services.
+Summary:        Cotyledon provides a framework for defining long-running services
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-pbr
-Requires:  python3-setproctitle
 # For building documentation
 BuildRequires:  python3-sphinx
 BuildRequires:  python3-setproctitle
+
+Requires:  python3-setproctitle
 
 %description -n python3-%{pypi_name}
 Cotyledon provides a framework for defining long-running services.
@@ -43,13 +46,19 @@ Cotyledon provides a framework for defining long-running services.
 %package doc
 Summary:    Documentation for %{name}
 Group:      Documentation
-License:    ASL 2.0
 
 %description doc
 Cotyledon provides a framework for defining long-running services.
 
 This package contains documentation in HTML format.
 
+%package -n python-%{pypi_name}-tests
+Summary:    Tests for %{name}
+
+%description -n python-%{pypi_name}-tests
+Cotyledon provides a framework for defining long-running services.
+
+This package contains test files
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
@@ -82,7 +91,6 @@ pushd %{py3dir}
 popd
 %endif
 
-
 %install
 %{__python2} setup.py install --skip-build --root %{buildroot}
 
@@ -92,26 +100,30 @@ pushd %{py3dir}
 popd
 %endif
 
-#delete tests
-rm -fr %{buildroot}%{python2_sitelib}/%{pypi_name}/tests/
-rm -fr %{buildroot}%{python3_sitelib}/%{pypi_name}/tests/
-rm -f %{buildroot}%{_bindir}/%{pypi_name}-example
-
-
 %files
-%doc README.rst LICENSE
+%doc README.rst
+%license LICENSE
 %{python2_sitelib}/%{pypi_name}
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %if 0%{?with_python3}
 %files -n python3-%{pypi_name}
-%doc README.rst LICENSE
+%doc README.rst
+%license LICENSE
 %{python3_sitelib}/%{pypi_name}
 %{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 %endif
 
 %files doc
 %doc html
+
+%files -n python-%{pypi_name}-tests
+%doc README.rst
+%license LICENSE
+%{python2_sitelib}/%{pypi_name}/tests/
+%{python3_sitelib}/%{pypi_name}/tests/
+%{_bindir}/%{pypi_name}-example
+
 
 %changelog
 * Wed Jul 6 2016 Mehdi Abaakouk <sileht@redhat.com> - 1.2.3-1
