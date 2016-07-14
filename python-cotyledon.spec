@@ -1,5 +1,4 @@
 %global pypi_name cotyledon
-%global pypi_hash 8b/23/365b5772422322f6bd9c482c1f73989eb389be555e7fa3abd5021b7ddf4b
 
 %if 0%{?fedora}
 %global with_python3 1
@@ -7,12 +6,12 @@
 
 Name:           python-%{pypi_name}
 Version:        1.2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Cotyledon provides a framework for defining long-running services
 
 License:        ASL 2.0
 URL:            https://cotyledon.readthedocs.io
-Source0:        https://pypi.python.org/packages/%{pypi_hash}/%{pypi_name}-%{version}.tar.gz
+Source0:        https://pypi.io/packages/source/c/cotyledon/cotyledon-1.2.5.tar.gz
 BuildArch:      noarch
 
 BuildRequires:  python2-devel
@@ -126,5 +125,8 @@ popd
 
 
 %changelog
+* Thu Jul 14 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.3-2
+- Fix source url
+
 * Wed Jul 6 2016 Mehdi Abaakouk <sileht@redhat.com> - 1.2.3-1
 - Initial package.
