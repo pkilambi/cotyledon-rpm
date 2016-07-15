@@ -6,7 +6,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.2.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Cotyledon provides a framework for defining long-running services
 
 License:        ASL 2.0
@@ -26,6 +26,18 @@ Requires:  python-setproctitle
 %description
 Cotyledon provides a framework for defining long-running services.
 
+
+%package -n python2-%{pypi_name}-tests
+Summary:          Cotyledon provides a framework for defining long-running services
+Requires:         python-%{pypi_name} = %{version}-%{release}
+Requires:         python-oslotest
+Requires:         python-testrepository
+Requires:         python-testscenarios
+Requires:         python-testtools
+
+%description -n python2-%{pypi_name}-tests
+Cotyledon provides a framework for defining long-running services.
+
 %if 0%{?with_python3}
 %package -n python3-%{pypi_name}
 Summary:        Cotyledon provides a framework for defining long-running services
@@ -40,6 +52,19 @@ Requires:  python3-setproctitle
 
 %description -n python3-%{pypi_name}
 Cotyledon provides a framework for defining long-running services.
+
+%package -n python3-%{pypi_name}-tests
+Summary:    Tests for %{name}
+Requires:         python3-%{pypi_name} = %{version}-%{release}
+Requires:         python3-oslotest
+Requires:         python3-testrepository
+Requires:         python3-testscenarios
+Requires:         python3-testtools
+
+%description -n python3-%{pypi_name}-tests
+Cotyledon provides a framework for defining long-running services.
+
+This package contains test files
 %endif
 
 %package doc
@@ -51,13 +76,6 @@ Cotyledon provides a framework for defining long-running services.
 
 This package contains documentation in HTML format.
 
-%package -n python-%{pypi_name}-tests
-Summary:    Tests for %{name}
-
-%description -n python-%{pypi_name}-tests
-Cotyledon provides a framework for defining long-running services.
-
-This package contains test files
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
@@ -69,6 +87,7 @@ sphinx-build doc/source html
 # remove the sphinx-build leftovers
 rm -rf html/.{doctrees,buildinfo}
 
+ 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -99,6 +118,9 @@ pushd %{py3dir}
 popd
 %endif
 
+%check
+%{__python2} setup.py test ||:
+
 %files
 %doc README.rst
 %license LICENSE
@@ -111,20 +133,28 @@ popd
 %license LICENSE
 %{python3_sitelib}/%{pypi_name}
 %{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+
+%files -n python3-%{pypi_name}-tests
+%license LICENSE
+%{python3_sitelib}/%{pypi_name}/tests
+
 %endif
 
 %files doc
 %doc html
 
-%files -n python-%{pypi_name}-tests
-%doc README.rst
+%files -n python2-%{pypi_name}-tests
 %license LICENSE
 %{python2_sitelib}/%{pypi_name}/tests/
-%{python3_sitelib}/%{pypi_name}/tests/
 %{_bindir}/%{pypi_name}-example
 
 
 %changelog
+* Fri Jul 15 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.3-3
+- Add check section
+- added new test dependencies
+- fixed tests sub packages
+
 * Thu Jul 14 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.3-2
 - Fix source url
 
