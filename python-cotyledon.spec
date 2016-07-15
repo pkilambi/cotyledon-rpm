@@ -79,35 +79,27 @@ This package contains documentation in HTML format.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
-# Remove bundled egg-info
-rm -rf %{pypi_name}.egg-info
 
-# generate html docs
-sphinx-build doc/source html
-# remove the sphinx-build leftovers
-rm -rf html/.{doctrees,buildinfo}
-
- 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
-# generate html docs
-sphinx-build-3 doc/source html
-# remove the sphinx-build leftovers
-rm -rf html/.{doctrees,buildinfo}
+2to3 --write --nobackups %{py3dir}
+%endif
 
-%endif # with_python3
+# Remove bundled egg-info
+rm -rf gnocchiclient.egg-info
 
+# Let RPM handle the requirements
+rm -f {,test-}requirements.txt
 
 %build
-%{__python2} setup.py build
-
+%py2_build
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setup.py build
+LANG=en_US.UTF-8 %{__python3} setup.py build
 popd
 %endif
+
 
 %install
 %{__python2} setup.py install --skip-build --root %{buildroot}
@@ -117,6 +109,13 @@ pushd %{py3dir}
 %{__python3} setup.py install --skip-build --root %{buildroot}
 popd
 %endif
+
+export PYTHONPATH="$( pwd ):$PYTHONPATH"
+sphinx-build -b html doc/source html
+
+# Fix hidden-file-or-dir warnings
+rm -rf html/.doctrees html/.buildinfo
+
 
 %check
 %{__python2} setup.py test ||:
