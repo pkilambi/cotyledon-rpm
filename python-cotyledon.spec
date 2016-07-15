@@ -83,7 +83,6 @@ This package contains documentation in HTML format.
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-2to3 --write --nobackups %{py3dir}
 %endif
 
 # Let RPM handle the requirements
