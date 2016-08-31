@@ -5,14 +5,18 @@
 %endif
 
 Name:           python-%{pypi_name}
-Version:        1.2.5
+Version:        1.2.7
 Release:        3%{?dist}
 Summary:        Cotyledon provides a framework for defining long-running services
 
 License:        ASL 2.0
 URL:            https://cotyledon.readthedocs.io
-Source0:        https://pypi.io/packages/source/c/cotyledon/cotyledon-1.2.5.tar.gz
+Source0:        https://pypi.io/packages/source/c/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
+
+%package -n python2-%{pypi_name}
+Summary:        Cotyledon provides a framework for defining long-running services
+%{?python_provide:%python_provide python2-cotyledon}
 
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
@@ -23,7 +27,7 @@ BuildRequires:  python-setproctitle
 
 Requires:  python-setproctitle
 
-%description
+%description -n python2-%{pypi_name}
 Cotyledon provides a framework for defining long-running services.
 
 
@@ -76,6 +80,8 @@ Cotyledon provides a framework for defining long-running services.
 
 This package contains documentation in HTML format.
 
+%description
+Cotyledon provides a framework for defining long-running services.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
@@ -96,6 +102,9 @@ LANG=en_US.UTF-8 %{__python3} setup.py build
 popd
 %endif
 
+export PYTHONPATH="$( pwd ):$PYTHONPATH"
+sphinx-build -b html doc/source html
+
 
 %install
 %{__python2} setup.py install --skip-build --root %{buildroot}
@@ -106,14 +115,15 @@ pushd %{py3dir}
 popd
 %endif
 
-export PYTHONPATH="$( pwd ):$PYTHONPATH"
-sphinx-build -b html doc/source html
-
 # Fix hidden-file-or-dir warnings
 rm -rf html/.doctrees html/.buildinfo
 
 
 %check
+%if 0%{?with_python3}
+%{__python3} setup.py test ||:
+rm -rf .testrepository
+%endif
 %{__python2} setup.py test ||:
 
 %files
@@ -145,13 +155,19 @@ rm -rf html/.doctrees html/.buildinfo
 
 
 %changelog
-* Fri Jul 15 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.3-3
+* Wed Aug 31 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.7-1
+- Rebase to 1.2.7
+- move sphinx-build to %build
+- move buildRequires/requires to python2-cotyledon 
+- run python3 tests
+
+* Fri Jul 15 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.5-3
 - Add check section
 - added new test dependencies
 - fixed tests sub packages
 
-* Thu Jul 14 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.3-2
+* Thu Jul 14 2016 Pradeep Kilambi <pkilambi@redhat.com> - 1.2.5-2
 - Fix source url
 
-* Wed Jul 6 2016 Mehdi Abaakouk <sileht@redhat.com> - 1.2.3-1
+* Wed Jul 6 2016 Mehdi Abaakouk <sileht@redhat.com> - 1.2.5-1
 - Initial package.
