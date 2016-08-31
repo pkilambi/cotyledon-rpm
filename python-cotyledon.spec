@@ -6,7 +6,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.2.7
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Cotyledon provides a framework for defining long-running services
 
 License:        ASL 2.0
